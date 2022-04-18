@@ -1,3 +1,5 @@
+from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib import messages
@@ -43,4 +45,11 @@ def profile(request):
     return render(request, 'users/profile.html', context)
 
 
+@login_required(login_url='users/login.html')
+def user_delete(request, id):
+    user = User.objects.get(id=id)
+    if request.user == user:
+        logout(request)
+        user.delete()
+        return redirect("blog-home")
 
